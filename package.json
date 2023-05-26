@@ -1,0 +1,21 @@
+{
+  "name": "osu-linking",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
