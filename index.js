@@ -1,8 +1,5 @@
-// const axios = require("axios");
 const express = require("express");
 const app = express();
-// const { WebhookClient, EmbedBuilder } = require("discord.js");
-// require("dotenv/config");
 
 // Define the endpoint to handle the redirect
 app.get("/callback", async (req, res) => {
@@ -12,7 +9,7 @@ app.get("/callback", async (req, res) => {
 
   const clientID = "22337";
   const clientSecret = process.env.client_secret;
-  const redirectURI = "http://localhost:3000/callback";
+  const redirectURI = "https://mia-verify.vercel.app/callback";
   const tokenEndpoint = "https://osu.ppy.sh/oauth/token";
 
   try {
@@ -39,12 +36,25 @@ app.get("/callback", async (req, res) => {
     // Display the message
     res.send({ message: "You can close this tab now." });
 
-    const client = new WebhookClient({ id: process.env.id, token: process.env.token });
-    // const embed = new EmbedBuilder().setTitle("User Profile").setde;
-    client.send({
-      content: "Someone linked their account!",
-      embeds: [new EmbedBuilder().setTitle(`userID=${userProfile.id}`).setDescription(`discordID=${state}`)],
-    });
+    const link = `https://discord.com/api/webhooks/${process.env.id}/${process.env.token}`;
+
+    fetch(link, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: `userID=${userProfile.id}\ndiscordID=${state}` }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Message sent successfully!");
+        } else {
+          console.error("Error sending message:", response.status, response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
   } catch (e) {
     res.send({ message: "Something went wrong. You might already have your account linked.." });
   }
