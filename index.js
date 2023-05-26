@@ -39,7 +39,7 @@ app.get("/callback", async (req, res) => {
     // Display the message
     res.send({ message: "You can close this tab now." });
 
-    const client = new WebhookClient({ id: "1111679860239241281", token: "wU4Dko2BMi1Y2AISLZvn_0tb-OfRUX7DyttV1-0vM7FIN4gz8kl5xCAaD98eDvSGOMOh" });
+    const client = new WebhookClient({ id: process.env.id, token: process.env.token });
     // const embed = new EmbedBuilder().setTitle("User Profile").setde;
     client.send({
       content: "Someone linked their account!",
