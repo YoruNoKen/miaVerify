@@ -12,53 +12,48 @@ app.get("/callback", async (req, res) => {
   const redirectURI = "https://mia-verify.vercel.app/callback";
   const tokenEndpoint = "https://osu.ppy.sh/oauth/token";
 
-  try {
-    const response = await axios.post(tokenEndpoint, {
-      client_id: clientID,
-      client_secret: clientSecret,
-      code: code,
-      grant_type: "authorization_code",
-      redirect_uri: redirectURI,
-    });
+  const response = await axios.post(tokenEndpoint, {
+    client_id: clientID,
+    client_secret: clientSecret,
+    code: code,
+    grant_type: "authorization_code",
+    redirect_uri: redirectURI,
+  });
 
-    const accessToken = response.data.access_token;
-    const profileEndpoint = "https://osu.ppy.sh/api/v2/me";
+  const accessToken = response.data.access_token;
+  const profileEndpoint = "https://osu.ppy.sh/api/v2/me";
 
-    const profileResponse = await axios.get(profileEndpoint, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const profileResponse = await axios.get(profileEndpoint, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    const userProfile = profileResponse.data;
-    console.log(userProfile);
+  const userProfile = profileResponse.data;
+  console.log(userProfile);
 
-    // Display the message
-    res.send({ message: "You can close this tab now." });
+  // Display the message
+  res.send({ message: "You can close this tab now." });
 
-    const link = `https://discord.com/api/webhooks/${process.env.id}/${process.env.token}`;
+  const link = `https://discord.com/api/webhooks/${process.env.id}/${process.env.token}`;
 
-    fetch(link, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ content: `userID=${userProfile.id}\ndiscordID=${state}` }),
+  fetch(link, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content: `userID=${userProfile.id}\ndiscordID=${state}` }),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Message sent successfully!");
+      } else {
+        console.error("Error sending message:", response.status, response.statusText);
+      }
     })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Message sent successfully!");
-        } else {
-          console.error("Error sending message:", response.status, response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending message:", error);
-      });
-  } catch (e) {
-    console.log(e);
-    res.send({ message: "Something went wrong. You might already have your account linked.." });
-  }
+    .catch((error) => {
+      console.error("Error sending message:", error);
+    });
 });
 
 app.get("/home", async (req, res) => {
