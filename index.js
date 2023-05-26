@@ -1,7 +1,7 @@
-const axios = require("axios");
+// const axios = require("axios");
 const express = require("express");
 const app = express();
-const { WebhookClient, EmbedBuilder } = require("discord.js");
+// const { WebhookClient, EmbedBuilder } = require("discord.js");
 // require("dotenv/config");
 
 // Define the endpoint to handle the redirect
@@ -48,6 +48,10 @@ app.get("/callback", async (req, res) => {
   } catch (e) {
     res.send({ message: "Something went wrong. You might already have your account linked.." });
   }
+});
+
+app.get("/home", async (req, res) => {
+  res.send({ test: "working" });
 });
 
 // Start the server
