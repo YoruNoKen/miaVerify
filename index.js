@@ -2,7 +2,7 @@ const axios = require("axios");
 const express = require("express");
 const app = express();
 const { WebhookClient, EmbedBuilder } = require("discord.js");
-require("dotenv/config");
+// require("dotenv/config");
 
 // Define the endpoint to handle the redirect
 app.get("/callback", async (req, res) => {
