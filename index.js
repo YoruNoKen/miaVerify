@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const fetch = require("fetch");
+const fetch = require("node-fetch");
 
 // Define the endpoint to handle the redirect
 app.get("/callback", async (req, res) => {
