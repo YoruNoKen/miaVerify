@@ -56,7 +56,7 @@ app.get("/callback", async (req, res) => {
         console.error("Error sending message:", error);
       });
   } catch (e) {
-    res.send({ message: "Something went wrong. You might already have your account linked.." });
+    res.send({ message: "Something went wrong. You might already have your account linked..", error: e });
   }
 });
 
