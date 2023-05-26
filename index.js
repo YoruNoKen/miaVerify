@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const axios = require("axios");
 
 // Define the endpoint to handle the redirect
 app.get("/callback", async (req, res) => {
@@ -20,23 +21,22 @@ app.get("/callback", async (req, res) => {
     redirect_uri: redirectURI,
   };
 
-  const response = await fetch(tokenEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  }).then((res) => res.json());
+  const response = await axios.post(tokenEndpoint, {
+    client_id: clientID,
+    client_secret: clientSecret,
+    code: code,
+    grant_type: "authorization_code",
+    redirect_uri: redirectURI,
+  });
 
   const accessToken = response.data.access_token;
   const profileEndpoint = "https://osu.ppy.sh/api/v2/me";
 
-  const profileResponse = await fetch(profileEndpoint, {
-    method: "GET",
+  const profileResponse = await axios.get(profileEndpoint, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-  }).then((res) => res.json());
+  });
 
   const userProfile = profileResponse.data;
   console.log(userProfile);
@@ -46,15 +46,20 @@ app.get("/callback", async (req, res) => {
 
   const link = `https://discord.com/api/webhooks/${process.env.id}/${process.env.token}`;
 
-  fetch(link, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ content: `userID=${userProfile.id}\ndiscordID=${state}` }),
-  })
+  axios
+    .post(
+      link,
+      {
+        content: `userID=${userProfile.id}\ndiscordID=${state}`,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
-      if (response.ok) {
+      if (response.status === 200) {
         console.log("Message sent successfully!");
       } else {
         console.error("Error sending message:", response.status, response.statusText);
