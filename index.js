@@ -13,14 +13,6 @@ app.get("/callback", async (req, res) => {
   const redirectURI = "https://mia-verify.vercel.app/callback";
   const tokenEndpoint = "https://osu.ppy.sh/oauth/token";
 
-  const requestBody = {
-    client_id: clientID,
-    client_secret: clientSecret,
-    code: code,
-    grant_type: "authorization_code",
-    redirect_uri: redirectURI,
-  };
-
   const response = await axios.post(tokenEndpoint, {
     client_id: clientID,
     client_secret: clientSecret,
@@ -33,9 +25,7 @@ app.get("/callback", async (req, res) => {
   const profileEndpoint = "https://osu.ppy.sh/api/v2/me";
 
   const profileResponse = await axios.get(profileEndpoint, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    Authorization: `Bearer ${accessToken}`,
   });
 
   const userProfile = profileResponse.data;
